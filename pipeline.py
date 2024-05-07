@@ -43,6 +43,10 @@ The question should focus on topics discussed in the text. You should write the 
 </text>
 If the text includes analogies, examples, metaphors etc., you should not include them in the question unless it is reasonable to assume these would be commonly used in educational materials for a {audience}.
 For example, if the text discusses the concept of gravity using the analogy of a bowling ball on a trampoline, you should not include the analogy in the question unless it is reasonable to assume that a {audience} would be familiar with this analogy.
+Please generate questions that:
+- Require critical thinking and cannot be easily answered by quoting the text verbatim.
+- Probe for deeper understanding and conceptual knowledge of the topic.
+- Are concise and suitable in complexity for a {audience}.
 Return only the question you would ask, not the text itself or any other information.
 """
 
@@ -59,10 +63,10 @@ def prepare_prompt_for_first_question(inputs: StepInput) -> StepOutput:
 
 def format_to_generate_second_question(questions_and_answer_messages, audience) -> str:
     student_understanding = [
-        "a very poor understanding of the topic. This student may be confused or have misconceptions about the topic which will be expressed in their question.",
-        "a poor grasp of the topic and wants to clarify their understanding.",
-        "a good understanding of the topic. They are likely to follow up about a specific component of the answer given.",
-        f"a very deep understanding of the topic and wants to explore the topic further. This student may ask questions beyond what would be expected from their level of study as a {audience}. They may make connections to other topics or ask about advanced concepts.",
+        "a very poor understanding of the topic. This student may be confused or have misconceptions about the topic which will be expressed in their question. Example: a question that reveals a fundamental misunderstanding of a key concept.",
+        "a poor grasp of the topic and wants to clarify their understanding. Example: a question that seeks clarification on a specific point mentioned in the previous answer.",
+        "a good understanding of the topic. They are likely to follow up about a specific component of the answer given. Example: a question that explores a subtopic or asks for elaboration on a particular aspect of the answer.",
+        f"a very deep understanding of the topic and wants to explore the topic further. This student may ask questions beyond what would be expected from their level of study as a {audience}. They may make connections to other topics or ask about advanced concepts. Example: a question that draws parallels to related subjects or inquires about the implications of the discussed ideas.",
     ]
     student_understanding = random.choice(student_understanding)
     messages_formatted = ""
@@ -75,8 +79,10 @@ def format_to_generate_second_question(questions_and_answer_messages, audience) 
     <conversation>
     {messages_formatted}
     </conversation>
-    Remember student is a {audience} with {student_understanding}. 
+    Remember the student is a {audience} with {student_understanding}. 
+    Generate a follow-up question that builds upon the previous answer.
     If the response from the model is beyond what would be expected from a {audience}, reflect this in the question.
+    Please ensure the question is relevant to the main topic and avoid tangential or unrelated questions.
     Just respond with the question.
     """
 
@@ -141,8 +147,8 @@ def format_final_response(
     The question could ask the model to draw connections between the current topic and other relevant concepts, fields, or real-world applications.
     The question might challenge the model to provide examples, analogies, or case studies to support its explanations or arguments.
     The question could encourage the model to discuss potential future developments, implications, or challenges related to the topic.
-    The question should be realistic and resemble something a curious and engaged user might ask in the given context.
-    **Remember the question should be reasonable for a {audience} to ask and engage with.**
+    The question should be realistic and resemble something a curious and engaged {audience} might ask in the given context.
+    Avoid generating redundant or repetitive questions that have already been addressed in the conversation.
     Please return only the generated question, without any additional text or formatting.
     """
 
